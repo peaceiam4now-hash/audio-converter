@@ -4,9 +4,15 @@ const ffmpeg = createFFmpeg({ log: true });
 async function convert() {
   const fileInput = document.getElementById('uploader');
   const file = fileInput.files[0];
+  if (!file) {
+    document.getElementById('status').innerText = "Please select an MP4 file.";
+    return;
+  }
+
   document.getElementById('status').innerText = "Loading FFmpeg...";
   await ffmpeg.load();
 
+  document.getElementById('status').innerText = "Converting...";
   ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(file));
   await ffmpeg.run('-i', 'input.mp4', 'output.mp3');
   const data = ffmpeg.FS('readFile', 'output.mp3');
